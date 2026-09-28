@@ -109,26 +109,60 @@ const policy = resolveTemplate(privacyPolicyTemplate, {
 
 ## Extending a template
 
-- `variables`: fills `{{placeholder}}` tokens used throughout the template copy. A template may
-  declare `requiredVariables` (the terms-of-service template requires `jurisdiction`); resolving
-  without one throws.
-- `sectionOverrides`: keyed by section `id`, replaces `heading` and/or `body` for that section only.
-- `customSections`: appended after the template's own sections, interpolated the same way.
-- `disabledSections`: an array of section ids to omit entirely from the resolved policy. Use this
-  for a standard section that doesn't apply to a given product (e.g. `childrens-privacy` for an
-  app with no consumer-facing audience), rather than overriding it with empty text.
+- `effectiveDate`: a real calendar date as `YYYY-MM-DD` (e.g. `"2026-03-15"`). Dates that don't
+  round-trip as a calendar date — `"2026-02-30"`, `"2023-02-29"` — are rejected; leap-day dates
+  like `"2024-02-29"` are accepted.
+- `variables`: fills `{{placeholder}}` tokens used throughout the template copy. All templates
+  require non-blank `companyName`, `productName`, and `contactEmail`; a template may declare
+  additional `requiredVariables` (the terms-of-service template also requires `jurisdiction`).
+  Resolving with a missing or whitespace-only required variable throws.
+- `sectionOverrides`: keyed by section `id`, replaces `heading` and/or `body` for that section —
+  applies to both the template's standard sections and to `customSections`.
+- `customSections`: appended after the template's own sections, interpolated the same way as
+  standard sections, and can be overridden via `sectionOverrides` by `id` just like they can.
+  Optionally mark one `requiresProductInput: true` (see below).
+- `disabledSections`: an array of section ids to omit entirely from the resolved policy (works
+  for both standard and custom sections). Use this for a section that doesn't apply to a given
+  product (e.g. `childrens-privacy` for an app with no consumer-facing audience), rather than
+  overriding it with empty text.
 - `validate` (default `true`): after resolving, checks for unresolved `{{placeholder}}` tokens,
-  missing required variables, an invalid `effectiveDate`, duplicate section ids, and any section
-  flagged `requiresProductInput` that hasn't been overridden or disabled — and throws naming the
-  specific problem. Several sections across all three templates (data collection, sharing,
-  retention, rights, account deletion, security, children's privacy, and cookie usage) ship with
-  placeholder bodies that state they haven't been completed; `resolveTemplate` will not resolve
-  them silently. Only pass `validate: false` for local preview of an incomplete draft — never for
-  a policy that will be published.
-- `shared/legal-terms.ts` exports `sharedClauses.subscriptionTermsPlaceholder` for apps with paid
-  plans: pull it into a `customSections` entry (e.g. id `subscription-terms`) and override it with
-  the app's actual billing, trial, renewal, cancellation, and refund terms, and decide separately
-  whether the app uses Apple's standard EULA or a custom one.
+  missing or blank required variables, an invalid `effectiveDate`, duplicate section ids, and any
+  section flagged `requiresProductInput` that hasn't been overridden with real (non-blank, even
+  after interpolation) content or disabled — and throws naming the specific problem. Several
+  sections across all three templates (data collection, sharing, retention, rights, account
+  deletion, security, children's privacy, and cookie usage) ship with placeholder bodies that
+  state they haven't been completed; `resolveTemplate` will not resolve them silently. Only pass
+  `validate: false` for local preview of an incomplete draft — never for a policy that will be
+  published.
+- `sharedClauses.subscriptionTermsPlaceholder` (exported from the package root) is for apps with
+  paid plans. Add it as a `customSections` entry marked `requiresProductInput: true`, then supply
+  the app's actual billing, trial, renewal, cancellation, and refund terms via
+  `sectionOverrides`; `resolveTemplate` throws until you do. Decide separately whether the app
+  uses Apple's standard EULA or a custom one — that isn't something this library can encode.
+
+  ```tsx
+  import {
+    resolveTemplate,
+    termsOfServiceTemplate,
+    sharedClauses,
+  } from "@ambient-labs/legal-and-policies";
+
+  const terms = resolveTemplate(termsOfServiceTemplate, {
+    effectiveDate: "2026-01-01",
+    variables: { companyName: "Ambient Labs", productName: "FieldCAD", contactEmail: "hello@fieldcadapp.com", jurisdiction: "the State of Delaware" },
+    customSections: [
+      {
+        id: "subscription-terms",
+        heading: "Subscription Terms",
+        body: sharedClauses.subscriptionTermsPlaceholder,
+        requiresProductInput: true,
+      },
+    ],
+    sectionOverrides: {
+      "subscription-terms": { body: "Monthly billing renews automatically; cancel anytime from Settings > Subscription." },
+    },
+  });
+  ```
 
 Policy bodies render as plain text, so Markdown or HTML links in `body` do not create clickable
 links; implement links in the consuming page or extend rendering separately if needed.

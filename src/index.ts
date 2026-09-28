@@ -3,6 +3,7 @@ export type {
   PolicyConfig,
   PolicySection,
   PolicyTemplate,
+  PolicyTemplateSection,
   PolicyTemplateSet,
   ResolvedPolicy,
 } from "./types.js";
@@ -13,6 +14,7 @@ export { resolveTemplate } from "./render/resolveTemplate.js";
 export { privacyPolicyTemplate } from "./content/privacy-policy.js";
 export { termsOfServiceTemplate } from "./content/terms-of-service.js";
 export { cookiePolicyTemplate } from "./content/cookie-policy.js";
+export { sharedClauses, baseRequiredVariables } from "./content/shared/legal-terms.js";
 
 export { PolicyPage } from "./components/PolicyPage.js";
 export type { PolicyPageProps } from "./components/PolicyPage.js";

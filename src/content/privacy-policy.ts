@@ -1,10 +1,11 @@
 import type { PolicyTemplateSet } from "../types.js";
-import { sharedClauses } from "./shared/legal-terms.js";
+import { baseRequiredVariables, sharedClauses } from "./shared/legal-terms.js";
 
 export const privacyPolicyTemplate: PolicyTemplateSet = {
   en: {
     id: "privacy-policy",
     title: "{{productName}} Privacy Policy",
+    requiredVariables: [...baseRequiredVariables],
     sections: [
       {
         id: "introduction",

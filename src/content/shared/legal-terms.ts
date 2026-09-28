@@ -1,4 +1,10 @@
 /**
+ * Identity/contact variables every template needs a real, non-blank value for.
+ * Spread into each template's `requiredVariables`.
+ */
+export const baseRequiredVariables = ["companyName", "productName", "contactEmail"];
+
+/**
  * Boilerplate clause bodies reused across more than one template.
  *
  * The `*Placeholder` clauses below intentionally describe missing information

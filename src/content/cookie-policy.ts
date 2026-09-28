@@ -1,9 +1,11 @@
 import type { PolicyTemplateSet } from "../types.js";
+import { baseRequiredVariables } from "./shared/legal-terms.js";
 
 export const cookiePolicyTemplate: PolicyTemplateSet = {
   en: {
     id: "cookie-policy",
     title: "{{productName}} Cookie Policy",
+    requiredVariables: [...baseRequiredVariables],
     sections: [
       {
         id: "what-are-cookies",

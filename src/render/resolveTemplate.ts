@@ -32,7 +32,18 @@ export function resolveTemplate(templates: PolicyTemplateSet, config: PolicyConf
     });
 
   for (const custom of config.customSections ?? []) {
-    sections.push(interpolateSection(custom, variables));
+    if (disabled.has(custom.id)) continue;
+    const override = overrides[custom.id];
+    sections.push(
+      interpolateSection(
+        {
+          id: custom.id,
+          heading: override?.heading ?? custom.heading,
+          body: override?.body ?? custom.body,
+        },
+        variables,
+      ),
+    );
   }
 
   const resolved: ResolvedPolicy = {

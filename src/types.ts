@@ -31,7 +31,13 @@ export interface PolicyConfig {
   effectiveDate: string;
   variables: Record<string, string>;
   sectionOverrides?: Record<string, Partial<Omit<PolicySection, "id">>>;
-  customSections?: PolicySection[];
+  /**
+   * Appended after the template's own sections. Mark one `requiresProductInput`
+   * to require a `sectionOverrides` entry for it before resolution succeeds —
+   * useful for shared placeholder clauses (e.g. subscription terms) pulled in
+   * from `shared/legal-terms.ts`.
+   */
+  customSections?: PolicyTemplateSection[];
   /** Standard section ids to omit entirely from the resolved policy. */
   disabledSections?: string[];
   /**

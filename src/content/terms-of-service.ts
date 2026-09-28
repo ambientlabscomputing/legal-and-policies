@@ -1,10 +1,11 @@
 import type { PolicyTemplateSet } from "../types.js";
+import { baseRequiredVariables } from "./shared/legal-terms.js";
 
 export const termsOfServiceTemplate: PolicyTemplateSet = {
   en: {
     id: "terms-of-service",
     title: "{{productName}} Terms of Service",
-    requiredVariables: ["jurisdiction"],
+    requiredVariables: [...baseRequiredVariables, "jurisdiction"],
     sections: [
       {
         id: "acceptance",
