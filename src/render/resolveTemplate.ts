@@ -1,4 +1,5 @@
 import { interpolate } from "./interpolate.js";
+import { validateResolvedPolicy } from "./validate.js";
 import type { PolicyConfig, PolicySection, PolicyTemplateSet, ResolvedPolicy } from "../types.js";
 
 const DEFAULT_LOCALE = "en";
@@ -14,29 +15,38 @@ export function resolveTemplate(templates: PolicyTemplateSet, config: PolicyConf
 
   const overrides = config.sectionOverrides ?? {};
   const variables = config.variables;
+  const disabled = new Set(config.disabledSections ?? []);
 
-  const sections: PolicySection[] = template.sections.map((section) => {
-    const override = overrides[section.id];
-    return interpolateSection(
-      {
-        id: section.id,
-        heading: override?.heading ?? section.heading,
-        body: override?.body ?? section.body,
-      },
-      variables,
-    );
-  });
+  const sections: PolicySection[] = template.sections
+    .filter((section) => !disabled.has(section.id))
+    .map((section) => {
+      const override = overrides[section.id];
+      return interpolateSection(
+        {
+          id: section.id,
+          heading: override?.heading ?? section.heading,
+          body: override?.body ?? section.body,
+        },
+        variables,
+      );
+    });
 
   for (const custom of config.customSections ?? []) {
     sections.push(interpolateSection(custom, variables));
   }
 
-  return {
+  const resolved: ResolvedPolicy = {
     id: template.id,
     title: interpolate(template.title, variables),
     effectiveDate: config.effectiveDate,
     sections,
   };
+
+  if (config.validate !== false) {
+    validateResolvedPolicy(template, config, resolved);
+  }
+
+  return resolved;
 }
 
 function interpolateSection(section: PolicySection, variables: Record<string, string>): PolicySection {

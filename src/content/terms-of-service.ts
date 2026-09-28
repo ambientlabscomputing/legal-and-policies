@@ -4,6 +4,7 @@ export const termsOfServiceTemplate: PolicyTemplateSet = {
   en: {
     id: "terms-of-service",
     title: "{{productName}} Terms of Service",
+    requiredVariables: ["jurisdiction"],
     sections: [
       {
         id: "acceptance",

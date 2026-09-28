@@ -15,6 +15,7 @@ export const cookiePolicyTemplate: PolicyTemplateSet = {
       {
         id: "how-we-use-cookies",
         heading: "How We Use Cookies",
+        requiresProductInput: true,
         body:
           "{{companyName}} uses cookies to keep you signed in, remember your settings, and gather " +
           "aggregate analytics about how {{productName}} is used so we can improve it.",
