@@ -187,3 +187,4 @@ in their `package.json` git dependency rather than a branch, so upgrades are exp
 | Version | Date | Summary |
 | --- | --- | --- |
 | v0.1.0 | 9/27/26 | First usable release |
+| v0.1.1 | 9/27/26 | Add a `prepare` script so `tsup` runs on install; without it, `dist` (which is gitignored) never existed in a git-dependency checkout and consumers installed an empty package. Fixes the `github:...#<tag>` install flow described above. |

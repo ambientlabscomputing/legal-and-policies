@@ -1,6 +1,6 @@
 {
   "name": "@ambient-labs/legal-and-policies",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Centralized legal policy templates and React components for Ambient Labs frontends.",
   "type": "module",
   "license": "UNLICENSED",
@@ -19,6 +19,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "tsup",
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
