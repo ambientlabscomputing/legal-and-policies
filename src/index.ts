@@ -15,6 +15,8 @@ export { privacyPolicyTemplate } from "./content/privacy-policy.js";
 export { termsOfServiceTemplate } from "./content/terms-of-service.js";
 export { cookiePolicyTemplate } from "./content/cookie-policy.js";
 export { sharedClauses, baseRequiredVariables } from "./content/shared/legal-terms.js";
+export { ipAddressDisclosure } from "./content/shared/ip-address.js";
+export type { IpAddressDisclosureOptions, IpAddressPurpose } from "./content/shared/ip-address.js";
 
 export { PolicyPage } from "./components/PolicyPage.js";
 export type { PolicyPageProps } from "./components/PolicyPage.js";

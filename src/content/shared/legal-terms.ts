@@ -22,6 +22,11 @@ export const sharedClauses = {
     "[This section has not been completed. Describe the in-app account-deletion entry point, any " +
     "external request route, verification steps, completion timing, what data is deleted versus " +
     "retained and why, and any subscription consequences, before publishing this policy.]",
+  ipAddressPlaceholder:
+    "[This section has not been completed. State whether IP addresses are only used in passing or are " +
+    "recorded, why, where they are kept and for how long, whether they are tied to accounts or turned " +
+    "into approximate location, and who receives them, before publishing this policy. " +
+    "ipAddressDisclosure() builds this text from those facts.]",
   securityPlaceholder:
     "[This section has not been completed. Describe the actual safeguards in place, such as transport " +
     "security and access restrictions, without claiming certifications or absolute security, before " +

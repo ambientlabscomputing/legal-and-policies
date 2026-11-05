@@ -24,6 +24,12 @@ export const privacyPolicyTemplate: PolicyTemplateSet = {
           "technical information (such as device and browser type) needed to operate and secure the service.",
       },
       {
+        id: "ip-address",
+        heading: "IP Addresses",
+        requiresProductInput: true,
+        body: sharedClauses.ipAddressPlaceholder,
+      },
+      {
         id: "how-we-use-information",
         heading: "How We Use Information",
         body:
