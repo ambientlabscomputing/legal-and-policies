@@ -19,6 +19,7 @@ const baseConfig = {
 // aren't specifically exercising that requirement.
 const privacyOverrides = {
   "information-we-collect": { body: "Test data collection copy." },
+  "ip-address": { body: "Test IP address copy." },
   analytics: { body: "Test analytics copy." },
   "data-sharing": { body: "Test data sharing copy." },
   "data-retention": { body: "Test retention copy." },

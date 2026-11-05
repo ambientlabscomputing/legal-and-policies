@@ -24,7 +24,8 @@ actual data involved. The template assumes account information and analytics wit
 product inventory. The no-sale statement and narrow sharing exceptions are unverified.
 
 For each app, document actual categories, sources, purposes, recipients, and user controls.
-Check account identifiers, IP addresses, diagnostics, uploaded files/photos, purchases,
+Check account identifiers, IP addresses (the privacy template's `ip-address` section and
+`ipAddressDisclosure` helper cover these as of v0.2.0), diagnostics, uploaded files/photos, purchases,
 device identifiers, permission-protected data, and AI inputs/outputs where applicable.
 Distinguish data kept on-device from transmitted data. Identify relevant providers and
 their roles; do not add categories or vendors the product does not use.

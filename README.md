@@ -18,7 +18,7 @@ Not published to a registry — consume it as a git dependency pinned to a tag:
 // package.json
 {
   "dependencies": {
-    "@ambient-labs/legal-and-policies": "github:ambient-labs/legal-and-policies#v0.1.0"
+    "@ambient-labs/legal-and-policies": "github:ambientlabscomputing/legal-and-policies#v0.2.0"
   }
 }
 ```
@@ -28,7 +28,7 @@ Not published to a registry — consume it as a git dependency pinned to a tag:
 ## Usage
 
 ```tsx
-import { PolicyPage, privacyPolicyTemplate, resolveTemplate } from "@ambient-labs/legal-and-policies";
+import { PolicyPage, ipAddressDisclosure, privacyPolicyTemplate, resolveTemplate } from "@ambient-labs/legal-and-policies";
 
 const policy = resolveTemplate(privacyPolicyTemplate, {
   effectiveDate: "2026-01-01",
@@ -42,6 +42,7 @@ const policy = resolveTemplate(privacyPolicyTemplate, {
   // throws until each one is overridden with real product facts or disabled.
   sectionOverrides: {
     "information-we-collect": { body: "..." },
+    "ip-address": { body: ipAddressDisclosure({ /* see "Disclosing IP addresses" */ }) },
     analytics: { body: "..." },
     "data-sharing": { body: "..." },
     "data-retention": { body: "Custom retention text for FieldCAD." },
@@ -167,6 +168,43 @@ const policy = resolveTemplate(privacyPolicyTemplate, {
 Policy bodies render as plain text, so Markdown or HTML links in `body` do not create clickable
 links; implement links in the consuming page or extend rendering separately if needed.
 
+## Disclosing IP addresses
+
+Any service reached over the internet sees its callers' IP addresses, so the privacy template has
+an `ip-address` section that every product must answer: write your own text, state the facts with
+`ipAddressDisclosure`, or add `"ip-address"` to `disabledSections` if the product genuinely never
+receives IP addresses (for example an on-device app that makes no network calls). Like the other
+product-input sections, `resolveTemplate` throws until you do.
+
+`ipAddressDisclosure` builds the paragraph from facts you declare, and throws if they are incomplete
+or contradict each other (for example recording addresses without saying for how long), so the policy
+cannot say more or less than you declared:
+
+```ts
+import { ipAddressDisclosure } from "@ambient-labs/legal-and-policies";
+
+sectionOverrides: {
+  "ip-address": {
+    body: ipAddressDisclosure({
+      handling: "recorded",            // or "transient": used while handling a request, never stored
+      purposes: ["operation", "security", "rate-limiting", "analytics", "error-diagnostics"],
+      recordedIn: ["our server logs", "product-analytics events", "error reports"], // recorded only
+      linkedToAccount: true,           // recorded only: is a stored address tied to a user/account?
+      derivesApproximateLocation: true, // e.g. an analytics tool turns it into country/region/city
+      retention: "90 days",            // recorded only
+      recipients: ["our cloud hosting provider", "Cloudflare"], // third parties; [] if none
+    }),
+  },
+},
+```
+
+Purposes: `operation`, `security`, `rate-limiting`, `fraud-prevention`, `analytics`, `error-diagnostics`,
+`support`, `legal`. Software you run yourself (a self-hosted analytics server) is not a recipient. Make
+sure the declared facts are true of the deployed product, including your telemetry and logging
+configuration; this library cannot check that. If your analytics or error-reporting tool records IPs
+(for example `ambient-telemetry` with `captureIp`), the `analytics` and `information-we-collect`
+sections should agree with this one.
+
 ## Development
 
 ```bash
@@ -188,3 +226,4 @@ in their `package.json` git dependency rather than a branch, so upgrades are exp
 | --- | --- | --- |
 | v0.1.0 | 9/27/26 | First usable release |
 | v0.1.1 | 9/27/26 | Add a `prepare` script so `tsup` runs on install; without it, `dist` (which is gitignored) never existed in a git-dependency checkout and consumers installed an empty package. Fixes the `github:...#<tag>` install flow described above. |
+| v0.2.0 | 11/5/26 | Add the privacy template's `ip-address` section and the `ipAddressDisclosure` helper. **Breaking for existing consumers:** the new section requires product input, so `resolveTemplate(privacyPolicyTemplate, ...)` throws until you override it (see "Disclosing IP addresses") or add `"ip-address"` to `disabledSections`. Also fixes the install snippet's GitHub org. |

@@ -1,6 +1,6 @@
 {
   "name": "@ambient-labs/legal-and-policies",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Centralized legal policy templates and React components for Ambient Labs frontends.",
   "type": "module",
   "license": "UNLICENSED",
